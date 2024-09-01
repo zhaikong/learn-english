@@ -1,265 +1,56 @@
-<!DOCTYPE html><html><head><base href="https://www.example.com/">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>翟浩宇的英语学习天地</title>
-<style>
-body {
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-  background-color: #f0f8ff;
-  margin: 0;
-  padding: 20px;
-  color: #333;
-}
-
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  background-color: white;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
-}
-
-h1, h2, h3 {
-  color: #4a86e8;
-  text-align: center;
-}
-
-.mascot {
-  width: 150px;
-  height: 150px;
-  margin: 0 auto;
-  display: block;
-}
-
-.progress-bar {
-  width: 100%;
-  height: 20px;
-  background-color: #e0e0e0;
-  border-radius: 10px;
-  margin-top: 20px;
-}
-
-.progress {
-  width: 0%;
-  height: 100%;
-  background-color: #4caf50;
-  border-radius: 10px;
-  transition: width 0.5s ease-in-out;
-}
-
-.lesson-container {
-  margin-top: 30px;
-  text-align: center;
-}
-
-.word-display {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-button {
-  background-color: #4a86e8;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #3a76d8;
-}
-
-button:disabled {
-  background-color: #a0a0a0;
-  cursor: not-allowed;
-}
-
-.feedback {
-  font-size: 18px;
-  margin-top: 20px;
-  font-weight: bold;
-}
-
-.pronunciation-guide {
-  font-style: italic;
-  color: #666;
-  margin-top: 10px;
-}
-
-@keyframes celebration {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-}
-
-.celebrate {
-  animation: celebration 0.5s ease-in-out;
-}
-
-.stage-container {
-  margin-top: 20px;
-  text-align: center;
-}
-
-#stageDisplay {
-  font-size: 18px;
-  font-weight: bold;
-  color: #4a86e8;
-}
-</style>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>翟浩宇的英语学习天地</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="container">
-  <h1>翟浩宇的英语学习天地</h1>
-  <div class="progress-container">
-    <h3>学习进度</h3>
-    <div class="progress-bar">
-      <div class="progress" id="progressBar"></div>
+    <div class="container">
+        <h1>翟浩宇的英语学习天地</h1>
+        <div class="grade-selector">
+            <label for="grade">选择年级：</label>
+            <select id="grade" onchange="changeGrade()">
+                <option value="1">一年级</option>
+                <option value="2">二年级</option>
+                <option value="3">三年级</option>
+                <option value="4">四年级</option>
+                <option value="5">五年级</option>
+                <option value="6">六年级</option>
+            </select>
+        </div>
+        <div class="progress-container">
+            <h3>学习进度</h3>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <p id="levelDisplay">当前等级：初学者</p>
+        </div>
+        <div class="lesson-container">
+            <h2>今天的单词</h2>
+            <div class="word-display" id="wordDisplay"></div>
+            <div class="pronunciation-guide" id="pronunciationGuide"></div>
+            <div class="phonetic-display" id="phoneticDisplay"></div>
+            <div class="buttons">
+                <button id="listenBtn" onclick="listen()">听</button>
+                <button id="speakBtn" onclick="speak()">说</button>
+                <button id="playRecordingBtn" onclick="playRecording()">播</button>
+                <button id="nextBtn" onclick="nextWord()">下一个</button>
+            </div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+        <div class="stage-container">
+            <h3>学习阶段</h3>
+            <div id="stageDisplay"></div>
+        </div>
+        <div class="game-container" style="display: none;">
+            <h3>趣味配对游戏</h3>
+            <div class="game-word" id="gameWord"></div>
+            <div class="game-options" id="gameOptions"></div>
+        </div>
     </div>
-    <p id="levelDisplay">当前等级：初学者</p>
-  </div>
-  <div class="lesson-container">
-    <h2>今天的单词</h2>
-    <div class="word-display" id="wordDisplay"></div>
-    <div class="pronunciation-guide" id="pronunciationGuide"></div>
-    <div class="buttons">
-      <button id="listenBtn" onclick="listen()">听一听</button>
-      <button id="speakBtn" onclick="speak()">说一说</button>
-      <button id="playRecordingBtn" onclick="playRecording()">播放录音</button>
-      <button id="nextBtn" onclick="nextWord()" disabled="">下一个</button>
-    </div>
-    <div class="feedback" id="feedback"></div>
-  </div>
-  <div class="stage-container">
-    <h3>学习阶段</h3>
-    <div id="stageDisplay"></div>
-  </div>
-</div>
-
-<script>
-const words = [
-  { word: "Hello", translation: "你好", pronunciation: "həˈləʊ" },
-  { word: "Friend", translation: "朋友", pronunciation: "frend" },
-  { word: "School", translation: "学校", pronunciation: "skuːl" },
-  { word: "Book", translation: "书", pronunciation: "bʊk" },
-  { word: "Teacher", translation: "老师", pronunciation: "ˈtiːtʃər" },
-  { word: "Student", translation: "学生", pronunciation: "ˈstjuːdənt" },
-  { word: "Pencil", translation: "铅笔", pronunciation: "ˈpensəl" },
-  { word: "Computer", translation: "电脑", pronunciation: "kəmˈpjuːtər" },
-  { word: "Mathematics", translation: "数学", pronunciation: "ˌmæθəˈmætɪks" },
-  { word: "Science", translation: "科学", pronunciation: "ˈsaɪəns" },
-  { word: "English", translation: "英语", pronunciation: "ˈɪŋɡlɪʃ" },
-  { word: "History", translation: "历史", pronunciation: "ˈhɪstri" },
-  { word: "Geography", translation: "地理", pronunciation: "dʒiˈɒɡrəfi" },
-  { word: "Art", translation: "艺术", pronunciation: "ɑːt" },
-  { word: "Music", translation: "音乐", pronunciation: "ˈmjuːzɪk" }
-];
-
-let currentWordIndex = 0;
-let progress = 0;
-let currentStage = 1;
-let audioRecording = null;
-
-function updateWord() {
-  const wordObj = words[currentWordIndex];
-  document.getElementById('wordDisplay').textContent = `${wordObj.word} - ${wordObj.translation}`;
-  document.getElementById('pronunciationGuide').textContent = `发音指南: ${wordObj.pronunciation}`;
-  document.getElementById('feedback').textContent = '';
-  document.getElementById('nextBtn').disabled = true;
-  document.getElementById('speakBtn').disabled = false;
-  document.getElementById('playRecordingBtn').disabled = true;
-}
-
-function listen() {
-  const wordObj = words[currentWordIndex];
-  const utterance = new SpeechSynthesisUtterance(wordObj.word);
-  utterance.lang = 'en-US';
-  speechSynthesis.speak(utterance);
-}
-
-function speak() {
-  const wordObj = words[currentWordIndex];
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.lang = 'en-US';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-
-  recognition.start();
-
-  recognition.onresult = function(event) {
-    const speechResult = event.results[0][0].transcript.toLowerCase();
-    const wordLower = wordObj.word.toLowerCase();
-    
-    if (speechResult === wordLower) {
-      document.getElementById('feedback').textContent = '太棒了！发音正确！';
-      document.getElementById('feedback').style.color = 'green';
-      document.getElementById('nextBtn').disabled = false;
-      document.getElementById('speakBtn').disabled = true;
-      document.querySelector('.mascot').classList.add('celebrate');
-      progress += 10;
-      document.getElementById('progressBar').style.width = `${progress}%`;
-      updateLevel();
-      audioRecording = new Audio(URL.createObjectURL(event.results[0][0].blob));
-      document.getElementById('playRecordingBtn').disabled = false;
-    } else {
-      document.getElementById('feedback').textContent = '再试一次吧，你可以的！';
-      document.getElementById('feedback').style.color = 'red';
-    }
-  };
-
-  recognition.onerror = function(event) {
-    console.error('Speech recognition error', event.error);
-    document.getElementById('feedback').textContent = '哎呀，出了点小问题。再试一次吧！';
-    document.getElementById('feedback').style.color = 'orange';
-  };
-}
-
-function playRecording() {
-  if (audioRecording) {
-    audioRecording.play();
-  }
-}
-
-function nextWord() {
-  currentWordIndex = (currentWordIndex + 1) % words.length;
-  updateWord();
-  document.querySelector('.mascot').classList.remove('celebrate');
-  if (currentWordIndex === 0) {
-    currentStage++;
-    updateStage();
-  }
-}
-
-function updateLevel() {
-  const level = Math.floor(progress / 20);
-  const levels = ['初学者', '入门', '基础', '中级', '高级'];
-  document.getElementById('levelDisplay').textContent = `当前等级：${levels[level] || '大师'}`;
-}
-
-function updateStage() {
-  const stages = ['单词认识', '听力练习', '口语练习', '阅读理解', '写作练习'];
-  document.getElementById('stageDisplay').textContent = `当前阶段：${stages[currentStage - 1] || '高级学习'}`;
-}
-
-updateWord();
-updateStage();
-
-// 每30分钟提醒学习
-setInterval(() => {
-  if (!document.hidden) {
-    alert('翟浩宇，是时候学习新单词啦！');
-  }
-}, 30 * 60 * 1000);
-</script>
-</body></html>
+    <script src="words.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
